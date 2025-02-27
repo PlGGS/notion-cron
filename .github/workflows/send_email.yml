@@ -19,7 +19,7 @@ jobs:
           python-version: '3.13'
 
       - name: Install dependencies
-        run: pip install secure-smtplib python-dotenv
+        run: pip install requests python-dotenv secure-smtplib 
 
       - name: Run script
         env:
