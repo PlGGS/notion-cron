@@ -1,0 +1,28 @@
+name: Run Notion Daily Cron
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # Runs daily at 12 AM CST
+  workflow_dispatch:
+
+jobs:
+  run-notion-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install requests python-dotenv
+
+      - name: Run script
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          DATABASE_ID: ${{ secrets.DATABASE_ID }}
+        run: python notion.py
