@@ -15,11 +15,15 @@ headers = {
     "Notion-Version": "2022-06-28"
 }
 
-# Assign default page_id value
+# Default page_id value
 page_id = None
 
-# Query the database
-response = requests.post("https://api.notion.com/v1/databases/{DATABASE_ID}/query", headers=headers)
+# Default response value
+response = None
+try:
+    response = requests.post("https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query", headers=headers)
+except Exception as e:
+    print(f"Failed to query Notion: {e}")
 
 if response.status_code == 200:
     database_data = response.json()
@@ -29,7 +33,7 @@ if response.status_code == 200:
         recent_page = results[0] # Get the most recent page (first in the sorted list)
         page_id = recent_page["id"].replace('-', '')
 else:
-    print(f"Failed to query Notion: {e}")
+    print(f"Bad response from Notion: {response.json()}")
     exit(1)
 
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
