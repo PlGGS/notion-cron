@@ -38,7 +38,8 @@ print(template_data)
 page_data = {
     "parent": {"database_id": NOTION_DATABASE_ID},
     "properties": {
-        "Name": {"title": [{"text": {"content": today}}]}
+        "Name": {"title": [{"text": {"content": today}}]},
+        **template_data.get("properties", {})
     }
 }
 
