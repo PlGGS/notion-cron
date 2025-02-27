@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 
 NOTION_API_KEY = os.getenv("NOTION_API_KEY")
-DATABASE_ID = os.getenv("DATABASE_ID")
+NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 
 if not NOTION_API_KEY or not DATABASE_ID:
     log_message("ERROR: Missing environment variables!")
@@ -18,7 +18,7 @@ headers = {
 today = datetime.today().strftime("%Y-%m-%d")
 
 data = {
-    "parent": {"database_id": DATABASE_ID},
+    "parent": {"database_id": NOTION_DATABASE_ID},
     "properties": {
         "Name": {"title": [{"text": {"content": today}}]}
     }
