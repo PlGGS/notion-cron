@@ -27,4 +27,4 @@ jobs:
           GMAIL_RECEIVER_EMAIL: ${{ secrets.GMAIL_RECEIVER_EMAIL }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           SMTP_SSL: ${{ secrets.SMTP_SSL }}
-        run: python email.py
+        run: python send_email.py
