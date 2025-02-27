@@ -6,7 +6,7 @@ NOTION_API_KEY = os.getenv("NOTION_API_KEY")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 NOTION_TEMPLATE_ID = os.getenv("NOTION_TEMPLATE_ID")
 
-if not NOTION_API_KEY or not DATABASE_ID:
+if not NOTION_API_KEY or not NOTION_DATABASE_ID:
     log_message("ERROR: Missing environment variables!")
     exit(1)
 
