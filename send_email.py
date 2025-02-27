@@ -21,7 +21,7 @@ page_id = None
 # Default response value
 response = None
 try:
-    response = requests.post("https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query", headers=headers)
+    response = requests.post(f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query", headers=headers)
 except Exception as e:
     print(f"Failed to query Notion: {e}")
 
