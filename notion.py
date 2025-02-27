@@ -4,6 +4,7 @@ from datetime import datetime
 
 NOTION_API_KEY = os.getenv("NOTION_API_KEY")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
+NOTION_TEMPLATE_ID = os.getenv("NOTION_TEMPLATE_ID")
 
 if not NOTION_API_KEY or not DATABASE_ID:
     log_message("ERROR: Missing environment variables!")
@@ -21,7 +22,8 @@ data = {
     "parent": {"database_id": NOTION_DATABASE_ID},
     "properties": {
         "Name": {"title": [{"text": {"content": today}}]}
-    }
+    },
+    "template": {"id": NOTION_TEMPLATE_ID}
 }
 
 response = requests.post("https://api.notion.com/v1/pages", json=data, headers=headers)

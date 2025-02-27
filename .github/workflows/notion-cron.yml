@@ -24,5 +24,6 @@ jobs:
       - name: Run script
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
-          DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_TEMPLATE_ID: ${{ secrets.NOTION_TEMPLATE_ID }}
         run: python notion.py
