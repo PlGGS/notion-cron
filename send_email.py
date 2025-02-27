@@ -18,8 +18,6 @@ headers = {
 # Default page_id value
 page_id = None
 
-# Default response value
-response = None
 try:
     response = requests.post(f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query", headers=headers)
 except Exception as e:
