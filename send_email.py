@@ -42,7 +42,7 @@ app_password = os.getenv("GMAIL_APP_PASSWORD")
 smtp_ssl = os.getenv("SMTP_SSL")
 
 subject = "LETS GET IT"
-if page_url is not Nonez:
+if page_id is not None:
     body = f"Good morning! Here's today's food tracker page: https://www.notion.so/{page_id}"
 else:
     body = f"Good morning! Couldn't get today's page ID, so here's the general food tracker page: https://www.notion.so/{NOTION_DATABASE_ID}"
