@@ -83,6 +83,7 @@ for block in blocks:
     # If we found the target heading, start collecting 'to_do' blocks
     if found_heading:
         if block.get("type") == "to_do" and block["to_do"].get("checked") == "False":
+            print(block)
             todo_blocks.append(block)
         else:
             break
