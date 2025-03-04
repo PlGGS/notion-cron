@@ -11,6 +11,8 @@ NOTION_FOOD_TRACKER_DATABASE_ID = os.getenv("NOTION_FOOD_TRACKER_DATABASE_ID")
 NOTION_DAILY_JOURNAL_DATABASE_ID = os.getenv("NOTION_DAILY_JOURNAL_DATABASE_ID")
 
 def get_top_page_id(database_id):
+    response = None
+    
     try:
         response = requests.post(f"https://api.notion.com/v1/databases/{database_id}/query", headers=headers)
     except Exception as e:
@@ -31,6 +33,8 @@ def get_top_page_id(database_id):
         return None
 
 def get_page_json(page_id):
+    response = None
+    
     try:
         response = requests.get(f"https://api.notion.com/v1/pages/{page_id}", headers=headers)
     except Exception as e:
