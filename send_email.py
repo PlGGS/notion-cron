@@ -75,7 +75,7 @@ daily_journal_data = get_page_content(daily_journal_page_id)
 print(daily_journal_data)
 
 # TODO get the three tasks from the metadata
-threeKeyTasks = ''
+threeKeyTasks = daily_journal_data
 
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
 receiver_email = os.getenv("GMAIL_RECEIVER_EMAIL")
