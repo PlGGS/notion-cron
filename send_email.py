@@ -94,6 +94,22 @@ for block in blocks:
         if text == target_heading:
             found_heading = True  # Start collecting from the next block
 
+def get_children(block_id):
+    url = f"https://api.notion.com/v1/blocks/{block_id}/children"
+    response = requests.get(url, headers=HEADERS)
+
+    if response.status_code != 200:
+        print(f"Failed to fetch children for block {block_id}: {response.text}")
+        return []
+
+    children = response.json().get("results", [])
+
+    for child in children:
+        if child.get("has_children"):
+            child["children"] = get_children(child["id"])  # Recursively fetch children
+
+    return children
+
 def format_todo_list(blocks, indent=0):
     formatted_list = ""
     
@@ -107,7 +123,7 @@ def format_todo_list(blocks, indent=0):
             
             if block.get("has_children"):
                 # Fetch and process child blocks recursively
-                child_blocks = get_children(block["id"])  # You need to implement this
+                child_blocks = get_children(block["id"])
                 formatted_list += format_todo_list(child_blocks, indent + 1)
 
     return formatted_list
