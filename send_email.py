@@ -118,7 +118,7 @@ def format_todo_list(blocks, indent=0):
             checked = "x" if todo.get("checked") else " "
             
             # Loop over each "rich_text" element to build full string in plaintext
-            text = " ".join([item["text"]["content"] for item in todo["rich_text"]])
+            text = " ".join([item["text"]["content"].strip() for item in todo["rich_text"]])
 
             formatted_list += f"{'    ' * indent}- [{checked}]  {text}\n"
             
