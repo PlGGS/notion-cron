@@ -94,6 +94,27 @@ for block in blocks:
         if text == target_heading:
             found_heading = True  # Start collecting from the next block
 
+def format_todo_list(blocks, indent=0):
+    formatted_list = ""
+    
+    for block in blocks:
+        if block.get("type") == "to_do":
+            todo = block["to_do"]
+            checked = "x" if todo.get("checked") else " "
+            text = todo["rich_text"][0]["plain_text"] if todo["rich_text"] else ""
+
+            formatted_list += f"{'    ' * indent}- [{checked}]  {text}\n"
+            
+            if block.get("has_children"):
+                # Fetch and process child blocks recursively
+                child_blocks = get_children(block["id"])  # You need to implement this
+                formatted_list += format_todo_list(child_blocks, indent + 1)
+
+    return formatted_list
+
+# Get to do list as list of formatted strings
+formatted_todo_list = format_todo_list(blocks)
+
 # Prepare email
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
 receiver_email = os.getenv("GMAIL_RECEIVER_EMAIL")
@@ -111,8 +132,8 @@ if daily_journal_page_id is not None:
     emailBody += f"\n\nHere's today's daily journal page: https://www.notion.so/{daily_journal_page_id} \
         \n\nAnd here's today's Key Tasks:\n"
     
-    for block in todo_blocks:
-        emailBody += f"[-] {block.get("plain_text")}\n"
+    for item in formatted_todo_list:
+        emailBody += item
 else:
     emailBody = f"\n\nGood morning! Couldn't get today's daily journal page ID, so here's the general daily journal page: https://www.notion.so/{NOTION_DAILY_JOURNAL_DATABASE_ID}"
 
