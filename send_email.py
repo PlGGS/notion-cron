@@ -85,7 +85,7 @@ for block in blocks:
         if block.get("type") == "to_do" and block["to_do"].get("checked") == False:
             todo_blocks.append(block)
         else:
-            break
+            continue
     
     # Check if current block is the target heading
     elif block.get("type") == "heading_2":
