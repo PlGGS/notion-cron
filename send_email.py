@@ -10,6 +10,12 @@ NOTION_WORKSPACE = os.getenv("NOTION_WORKSPACE")
 NOTION_FOOD_TRACKER_DATABASE_ID = os.getenv("NOTION_FOOD_TRACKER_DATABASE_ID")
 NOTION_DAILY_JOURNAL_DATABASE_ID = os.getenv("NOTION_DAILY_JOURNAL_DATABASE_ID")
 
+headers = {
+    "Authorization": f"Bearer {NOTION_API_KEY}",
+    "Content-Type": "application/json",
+    "Notion-Version": "2022-06-28"
+}
+
 def get_top_page_id(database_id):
     response = None
     
@@ -55,12 +61,6 @@ print(daily_journal_data)
 
 # TODO get the three tasks from the json
 threeKeyTasks = ''
-
-headers = {
-    "Authorization": f"Bearer {NOTION_API_KEY}",
-    "Content-Type": "application/json",
-    "Notion-Version": "2022-06-28"
-}
 
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
 receiver_email = os.getenv("GMAIL_RECEIVER_EMAIL")
