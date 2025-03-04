@@ -29,7 +29,7 @@ except Exception as e:
 if template_response.status_code == 200:
     template_data = template_response.json()
 else:
-    print(f"Bad response from Notion for Template: {response.json()}")
+    print(f"Bad response from Notion for Template: {template_response.json()}")
     exit(1)
 
 print("template_data:")

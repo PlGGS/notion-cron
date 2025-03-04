@@ -25,7 +25,8 @@ jobs:
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_WORKSPACE: ${{ secrets.NOTION_WORKSPACE }}
-          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_FOOD_TRACKER_DATABASE_ID: ${{ secrets.NOTION_FOOD_TRACKER_DATABASE_ID }}
+          NOTION_DAILY_JOURNAL_DATABASE_ID: ${{ secrets.NOTION_DAILY_JOURNAL_DATABASE_ID }}
           GMAIL_SENDER_EMAIL: ${{ secrets.GMAIL_SENDER_EMAIL }}
           GMAIL_RECEIVER_EMAIL: ${{ secrets.GMAIL_RECEIVER_EMAIL }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
