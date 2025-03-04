@@ -71,12 +71,27 @@ def get_page_content(page_id):
 food_tracker_page_id = get_top_page_id(NOTION_FOOD_TRACKER_DATABASE_ID)
 daily_journal_page_id = get_top_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID)
 
-daily_journal_data = get_page_content(daily_journal_page_id)
-print(daily_journal_data)
+# Get all blocks within the page
+blocks = get_page_content(daily_journal_page_id).get("results", [])
 
-# TODO get the three tasks from the metadata
-threeKeyTasks = daily_journal_data
+# Find all 'to_do' blocks after "3 Key Things for Tomorrow"
+target_heading = "3 Key Things for Tomorrow"
+found_heading = False
+todo_blocks = []
 
+for block in blocks:
+    # If we found the target heading, start collecting 'to_do' blocks
+    if found_heading:
+        if block.get("type") == "to_do" and block.get("checked") == "False":
+            todo_blocks.append(block)
+    
+    # Check if current block is the target heading
+    elif block.get("type") == "heading_2":
+        text = block["heading_2"]["rich_text"][0]["plain_text"] if block["heading_2"]["rich_text"] else ""
+        if text == target_heading:
+            found_heading = True  # Start collecting from the next block
+
+# Prepare email
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
 receiver_email = os.getenv("GMAIL_RECEIVER_EMAIL")
 app_password = os.getenv("GMAIL_APP_PASSWORD")
@@ -91,7 +106,10 @@ else:
 
 if daily_journal_page_id is not None:
     emailBody += f"\n\nHere's today's daily journal page: https://www.notion.so/{daily_journal_page_id} \
-        \n\nAnd here's today's 3 Key Tasks:\n{threeKeyTasks}"
+        \n\nAnd here's today's Key Tasks:\n"
+    
+    for block in todo_blocks:
+        emailBody += f"[-] {block.get("plain_text")}\n"
 else:
     emailBody = f"\n\nGood morning! Couldn't get today's daily journal page ID, so here's the general daily journal page: https://www.notion.so/{NOTION_DAILY_JOURNAL_DATABASE_ID}"
 
