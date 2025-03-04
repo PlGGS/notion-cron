@@ -74,7 +74,7 @@ daily_journal_page_id = get_top_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID)
 # Get all blocks within the page
 blocks = get_page_content(daily_journal_page_id).get("results", [])
 
-# Find all 'to_do' blocks after "3 Key Things for Tomorrow"
+# Find all unchecked 'to_do' blocks after "3 Key Things for Tomorrow"
 target_heading = "3 Key Things for Tomorrow"
 found_heading = False
 todo_blocks = []
@@ -103,7 +103,6 @@ def get_children(block_id):
     children = response.json().get("results", [])
 
     for child in children:
-        print(child)
         if child.get("has_children"):
             child["children"] = get_children(child["id"])  # Recursively fetch children
 
@@ -130,7 +129,7 @@ def format_todo_list(blocks, indent=0):
     return formatted_list
 
 # Get to do list as list of formatted strings
-formatted_todo_list = format_todo_list(blocks)
+formatted_todo_list = format_todo_list(todo_blocks)
 
 # Prepare email
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
