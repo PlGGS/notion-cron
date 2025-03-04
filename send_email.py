@@ -38,28 +38,43 @@ def get_top_page_id(database_id):
         print(f"Bad response from Notion: {response.json()}")
         return None
 
-def get_page_json(page_id):
+def get_page_metadata(page_id):
     response = None
     
     try:
         response = requests.get(f"https://api.notion.com/v1/pages/{page_id}", headers=headers)
     except Exception as e:
-        print(f"Failed to get Notion Template json: {e}")
+        print(f"Failed to get Notion page metadata: {e}")
 
     if response.status_code == 200:
         return response.json()
     else:
-        print(f"Bad response from Notion for Template: {response.json()}")
+        print(f"Bad response from Notion for page metadata: {response.json()}")
         return None
+
+def get_page_content(page_id):
+    response = None
+    
+    try:
+        response = requests.get(f"https://api.notion.com/v1/blocks/{page_id}/children", headers=headers)
+    except Exception as e:
+        print(f"Failed to get Notion page content: {e}")
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Bad response from Notion for page content: {response.json()}")
+        return None
+
 
 # Default page_id values
 food_tracker_page_id = get_top_page_id(NOTION_FOOD_TRACKER_DATABASE_ID)
 daily_journal_page_id = get_top_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID)
 
-daily_journal_data = get_page_json(daily_journal_page_id)
+daily_journal_data = get_page_content(daily_journal_page_id)
 print(daily_journal_data)
 
-# TODO get the three tasks from the json
+# TODO get the three tasks from the metadata
 threeKeyTasks = ''
 
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
