@@ -47,7 +47,7 @@ def get_page_json(page_id):
         print(f"Failed to get Notion Template json: {e}")
 
     if response.status_code == 200:
-        template_data = response.json()
+        return response.json()
     else:
         print(f"Bad response from Notion for Template: {response.json()}")
         return None
