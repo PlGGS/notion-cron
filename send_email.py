@@ -84,7 +84,7 @@ message = MIMEMultipart()
 message["From"] = sender_email
 message["To"] = receiver_email
 message["Subject"] = subject
-message.attach(MIMEText(body, "plain"))
+message.attach(MIMEText(emailBody, "plain"))
 
 try:
     with smtplib.SMTP_SSL(smtp_ssl, 465) as server:
