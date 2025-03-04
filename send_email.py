@@ -82,14 +82,20 @@ todo_blocks = []
 for block in blocks:
     # If we found the target heading, start collecting 'to_do' blocks
     if found_heading:
-        if block.get("type") == "to_do" and block.get("checked") == "False":
+        if block.get("type") == "to_do" and block.get("checked") == False:
             todo_blocks.append(block)
+        else:
+            break
     
     # Check if current block is the target heading
     elif block.get("type") == "heading_2":
         text = block["heading_2"]["rich_text"][0]["plain_text"] if block["heading_2"]["rich_text"] else ""
         if text == target_heading:
             found_heading = True  # Start collecting from the next block
+
+print(found_heading)
+for block in todo_blocks:
+    print(block)
 
 # Prepare email
 sender_email = os.getenv("GMAIL_SENDER_EMAIL")
