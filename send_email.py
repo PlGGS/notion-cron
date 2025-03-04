@@ -89,7 +89,7 @@ for block in blocks:
     
     # Check if current block is the target heading
     elif block.get("type") == "heading_2":
-        text = block["heading_2"]["rich_text"][0]["plain_text"] if block["heading_2"]["rich_text"] else ""
+        text = block["heading_2"]["rich_text"][0]["content"] if block["heading_2"]["rich_text"] else ""
         if text == target_heading:
             found_heading = True  # Start collecting from the next block
 
@@ -116,7 +116,9 @@ def format_todo_list(blocks, indent=0):
         if block.get("type") == "to_do":
             todo = block["to_do"]
             checked = "x" if todo.get("checked") else " "
-            text = todo["rich_text"][0]["plain_text"] if todo["rich_text"] else ""
+            
+            # Loop over each "rich_text" element to build full string in plaintext
+            text = " ".join([item["text"]["content"] for item in todo["rich_text"]])
 
             formatted_list += f"{'    ' * indent}- [{checked}]  {text}\n"
             
