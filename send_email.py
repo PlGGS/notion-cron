@@ -89,7 +89,7 @@ for block in blocks:
     
     # Check if current block is the target heading
     elif block.get("type") == "heading_2":
-        text = block["heading_2"]["rich_text"][0]["content"] if block["heading_2"]["rich_text"] else ""
+        text = block["heading_2"]["rich_text"][0]["plain_text"] if block["heading_2"]["rich_text"] else ""
         if text == target_heading:
             found_heading = True  # Start collecting from the next block
 
