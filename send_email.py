@@ -95,8 +95,7 @@ for block in blocks:
             found_heading = True  # Start collecting from the next block
 
 def get_children(block_id):
-    url = f"https://api.notion.com/v1/blocks/{block_id}/children"
-    response = requests.get(url, headers=HEADERS)
+    response = requests.get(f"https://api.notion.com/v1/blocks/{block_id}/children", headers=headers)
 
     if response.status_code != 200:
         print(f"Failed to fetch children for block {block_id}: {response.text}")
