@@ -16,7 +16,7 @@ headers = {
     "Notion-Version": "2022-06-28"
 }
 
-def get_top_page_id(database_id):
+def get_page_id(database_id, index=0):
     response = None
     
     try:
@@ -29,8 +29,12 @@ def get_top_page_id(database_id):
         results = database_data["results"]
         
         if results:
-            recent_page = results[0] # Get the most recent page (first in the sorted list)
-            return recent_page["id"].replace('-', '')
+            if results[index]:
+                recent_page = results[index] # Get the most recent page (first in the sorted list)
+                return recent_page["id"].replace('-', '')
+            else:
+                print(f"Page data does not include row at index: {database_data}")
+                return None
         else:
             print(f"No results returned in page data: {database_data}")
             return None
@@ -68,8 +72,8 @@ def get_page_content(page_id):
 
 
 # Default page_id values
-food_tracker_page_id = get_top_page_id(NOTION_FOOD_TRACKER_DATABASE_ID)
-daily_journal_page_id = get_top_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID)
+food_tracker_page_id = get_page_id(NOTION_FOOD_TRACKER_DATABASE_ID)
+daily_journal_page_id = get_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID, 1) # We want the second from the top to get todo blocks from prev day
 
 # Get all blocks within the page
 blocks = get_page_content(daily_journal_page_id).get("results", [])
@@ -79,6 +83,7 @@ target_heading = "3 Key Things for Tomorrow"
 found_heading = False
 todo_blocks = []
 
+# Insert blocks into todo_blocks if they're unchecked with 'type' of 'to_do'
 for block in blocks:
     # If we found the target heading, start collecting 'to_do' blocks
     if found_heading:
@@ -92,6 +97,36 @@ for block in blocks:
         text = block["heading_2"]["rich_text"][0]["plain_text"] if block["heading_2"]["rich_text"] else ""
         if text == target_heading:
             found_heading = True  # Start collecting from the next block
+
+def update_page_content(page_id, json, with_children=False):
+    response = None
+    
+    try:
+        response = requests.patch(f"https://api.notion.com/v1/blocks/{page_id}/children", json=json, headers=headers)
+        
+    except Exception as e:
+        print(f"Failed to get Notion page content: {e}")
+
+    if response.status_code == 200:
+        print("Updated today's journal successfully!")
+    else:
+        print(f"Bad response from Notion for attempted update to page content: {response.json()}")
+
+# Get top journal page to insert into
+top_journal_page_id = get_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID, 0)
+
+# Create page_data from todo_blocks
+page_data = {
+	"children": []
+}
+page_data["children"] = todo_blocks
+
+# Insert todo_blocks at the bottom of the newest journal page
+update_page_content(top_journal_page_id, todo_blocks)
+
+
+
+
 
 def get_children(block_id):
     response = requests.get(f"https://api.notion.com/v1/blocks/{block_id}/children", headers=headers)
