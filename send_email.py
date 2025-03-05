@@ -87,7 +87,7 @@ def append_block_children(page_id, json):
         print(f"Failed to get Notion page content: {e}")
 
     if response.status_code == 200:
-        print("Updated today's journal successfully!")
+        print("Successfully appended block to today's journal!")
     else:
         print(f"Bad response from Notion for attempted update to page content: {response.json()}")
 
@@ -131,7 +131,7 @@ def get_last_inserted_block_id(page_id):
 
 def remove_checked_blocks(blocks, only_top_level=False):
     for block in blocks:
-        if block.get("type") == "to_do" and block.get("to_do").get("checked"):
+        if block.get("type") == "to_do" and block["to_do"].get("checked"):
             blocks.remove(block)
 
         if only_top_level == False:
