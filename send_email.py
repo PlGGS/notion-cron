@@ -71,7 +71,7 @@ def get_children(block_id):
     children = response.json().get("results", [])
 
     for child in children:
-        if child.get("type") == "to_do" and child.get("has_children"):
+        if child.get("has_children"):
             child.setdefault("children", [])
             child["children"] = get_children(child["id"])  # Recursively fetch children
 
