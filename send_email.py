@@ -77,35 +77,48 @@ def get_children(block_id):
 
     return children
 
-def update_page_content(page_id, json, with_children=False):
-    response = None
+def add_todo_blocks_to_page(target_page_id, blocks):
+    for block in blocks:
+        block_payload = {
+            "children": [
+                {
+                    "object": "block",
+                    "type": "to_do",
+                    "to_do": {
+                        "rich_text": block["to_do"].get("rich_text", []),
+                        "checked": block["to_do"].get("checked", False)
+                    }
+                }
+            ]
+        }
+
+        # Send PATCH request to create the to-do block on the new page
+        update_page_content(target_page_id, block_payload)
+
+        # If the block has children, recursively add them
+        if block.get("children"):
+            # Get the last inserted block ID (assuming last response contains the new block ID)
+            new_block_id = get_last_inserted_block_id(target_page_id)
+
+            # Recursively insert child blocks into this newly created block
+            update_todo_blocks(new_block_id, block["children"])
+
+def get_last_inserted_block_id(page_id):
+    response = requests.get(f"https://api.notion.com/v1/blocks/{page_id}/children", headers=headers)
     
-    try:
-        response = requests.patch(f"https://api.notion.com/v1/blocks/{page_id}/children", json=json, headers=headers)
-        
-    except Exception as e:
-        print(f"Failed to get Notion page content: {e}")
-
     if response.status_code == 200:
-        print("Updated today's journal successfully!")
-    else:
-        print(f"Bad response from Notion for attempted update to page content: {response.json()}")
-
-# Create page_data from todo_blocks
-page_data = {
-	"children": []
-}
+        results = response.json().get("results", [])
+        if results:
+            return results[-1]["id"]  # Get the last inserted block's ID
+    print(f"Failed to fetch last inserted block for {page_id}: {response.text}")
+    return None
 
 # Get previous day's todo blocks
 prev_day_todo_blocks = get_children(prev_journal_page_id)
-
-# Insert previous day's todo blocks into page_data template json
-page_data["children"] = prev_day_todo_blocks
-
 # Get top journal page to insert previous day's todo blocks into
 top_journal_page_id = get_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID, 0)
 # Insert previous day's todo blocks at the bottom of the newest journal page
-update_page_content(top_journal_page_id, page_data)
+add_todo_blocks_to_page(top_journal_page_id, prev_day_todo_blocks)
 
 def format_todo_list(blocks, indent=0):
     formatted_list = ""
@@ -148,8 +161,6 @@ if top_journal_page_id is not None:
     
     for item in formatted_todo_list:
         emailBody += item
-
-    emailBody += f"\n{page_data}"
 else:
     emailBody = f"\n\nGood morning! Couldn't get today's daily journal page ID, so here's the general daily journal page: https://www.notion.so/{NOTION_DAILY_JOURNAL_DATABASE_ID}"
 
