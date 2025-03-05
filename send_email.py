@@ -139,10 +139,13 @@ page_data = {
 
 # Insert children sequentially
 for block in todo_blocks:
+    # Append parent
     page_data["children"].append(block)
+    
     children_blocks = get_children(block["id"])
     for child_block in children_blocks:
-        page_data["children"].append(child_block)
+        # Append child to parent that we appended above
+        page_data["children"][:-1]["children"].append(child_block)
 
 # Insert todo_blocks at the bottom of the newest journal page
 update_page_content(top_journal_page_id, page_data)
@@ -193,6 +196,8 @@ if daily_journal_page_id is not None:
     
     for item in formatted_todo_list:
         emailBody += item
+
+    emailBody += f"\n{page_data}"
 else:
     emailBody = f"\n\nGood morning! Couldn't get today's daily journal page ID, so here's the general daily journal page: https://www.notion.so/{NOTION_DAILY_JOURNAL_DATABASE_ID}"
 
