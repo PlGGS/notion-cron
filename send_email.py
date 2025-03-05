@@ -136,7 +136,7 @@ top_journal_page_id = get_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID, 0)
 block_template = {
 	"children": []
 }
-page_data = copy(block_template)
+page_data = block_template.copy()
 
 # Insert children sequentially
 for block in todo_blocks:
@@ -146,7 +146,7 @@ for block in todo_blocks:
     children_blocks = get_children(block["id"])
     for child_block in children_blocks:
         # Append child to parent that we appended above
-        page_data["children"][:-1].append(copy(block_template))
+        page_data["children"][:-1].append(block_template.copy())
         page_data["children"][:-1]["children"].append(child_block)
 
 # Insert todo_blocks at the bottom of the newest journal page
