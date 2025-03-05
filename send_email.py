@@ -131,12 +131,15 @@ def get_last_inserted_block_id(page_id):
 
 def remove_checked_blocks(blocks, only_top_level=False):
     for block in blocks:
-        if block.get("type") == "to_do" and block["to_do"].get("checked"):
-            blocks.remove(block)
+        print(block)
 
         if only_top_level == False:
             if block.get("children"):
                 remove_checked_blocks(block["children"])
+
+        if block.get("type") == "to_do" and block["to_do"].get("checked"):
+            print("Removed")
+            blocks.remove(block)
 
     return blocks
 
