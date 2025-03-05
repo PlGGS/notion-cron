@@ -130,18 +130,17 @@ def get_last_inserted_block_id(page_id):
     return None
 
 def remove_checked_blocks(blocks, only_top_level=False):
+    trimmed_blocks = blocks.copy()
+    
     for block in blocks:
-        print(block)
-
         if only_top_level == False:
             if block.get("children"):
                 remove_checked_blocks(block["children"])
 
         if block.get("type") == "to_do" and block["to_do"].get("checked"):
-            print("Removed")
-            blocks.remove(block)
+            trimmed_blocks.remove(block)
 
-    return blocks
+    return trimmed_blocks
 
 # Get previous day's todo blocks
 prev_day_todo_blocks = get_children(prev_journal_page_id)
