@@ -77,7 +77,7 @@ def get_children(block_id):
 
     return children
 
-def update_page_content(page_id, json):
+def append_block_children(page_id, json):
     response = None
     
     try:
@@ -95,7 +95,6 @@ def update_page_content(page_id, json):
 def add_todo_blocks_to_page(target_page_id, blocks):
     for block in blocks:
         if block.get("type") == "to_do":
-            print(block)
             block_payload = {
                 "children": [
                     {
@@ -110,7 +109,7 @@ def add_todo_blocks_to_page(target_page_id, blocks):
             }
 
             # Send PATCH request to create the to-do block on the new page
-            update_page_content(target_page_id, block_payload)
+            append_block_children(target_page_id, block_payload)
 
             # If the block has children, recursively add them
             if block.get("children"):
@@ -130,16 +129,33 @@ def get_last_inserted_block_id(page_id):
     print(f"Failed to fetch last inserted block for {page_id}: {response.text}")
     return None
 
+def remove_checked_blocks(blocks, only_top_level=False):
+    for block in blocks:
+        if block.get("type") == "to_do" and block.get("to_do").get("checked"):
+            blocks.remove(block)
+
+    if only_top_level == False:
+        if block.get("children"):
+            remove_checked_blocks(block["children"])
+
 # Get previous day's todo blocks
 prev_day_todo_blocks = get_children(prev_journal_page_id)
+
+
 # Get top journal page to insert previous day's todo blocks into
 top_journal_page_id = get_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID, 0)
+
+# Exclude top level checked blocks
+remove_checked_blocks(prev_day_todo_blocks, True)
 # Insert previous day's todo blocks at the bottom of the newest journal page
 add_todo_blocks_to_page(top_journal_page_id, prev_day_todo_blocks)
 
 def format_todo_list(blocks, indent=0):
     formatted_list = ""
 
+    # Exclude top level checked blocks
+    remove_checked_blocks(prev_day_todo_blocks, True)
+    
     for block in blocks:
         if block.get("type") == "to_do":
             todo = block["to_do"]
