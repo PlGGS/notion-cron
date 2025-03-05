@@ -134,28 +134,26 @@ def remove_checked_blocks(blocks, only_top_level=False):
         if block.get("type") == "to_do" and block.get("to_do").get("checked"):
             blocks.remove(block)
 
-    if only_top_level == False:
-        if block.get("children"):
-            remove_checked_blocks(block["children"])
+        if only_top_level == False:
+            if block.get("children"):
+                remove_checked_blocks(block["children"])
+
+    return blocks
 
 # Get previous day's todo blocks
 prev_day_todo_blocks = get_children(prev_journal_page_id)
 
+# Exclude top level checked blocks
+prev_day_todo_blocks = remove_checked_blocks(prev_day_todo_blocks, True)
 
 # Get top journal page to insert previous day's todo blocks into
 top_journal_page_id = get_page_id(NOTION_DAILY_JOURNAL_DATABASE_ID, 0)
-
-# Exclude top level checked blocks
-remove_checked_blocks(prev_day_todo_blocks, True)
 # Insert previous day's todo blocks at the bottom of the newest journal page
 add_todo_blocks_to_page(top_journal_page_id, prev_day_todo_blocks)
 
 def format_todo_list(blocks, indent=0):
     formatted_list = ""
 
-    # Exclude top level checked blocks
-    remove_checked_blocks(prev_day_todo_blocks, True)
-    
     for block in blocks:
         if block.get("type") == "to_do":
             todo = block["to_do"]
