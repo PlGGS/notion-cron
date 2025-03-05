@@ -122,7 +122,7 @@ page_data = {
 page_data["children"] = todo_blocks
 
 # Insert todo_blocks at the bottom of the newest journal page
-update_page_content(top_journal_page_id, todo_blocks)
+update_page_content(top_journal_page_id, page_data)
 
 
 
