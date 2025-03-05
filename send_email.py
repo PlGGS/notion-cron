@@ -118,7 +118,7 @@ def add_todo_blocks_to_page(target_page_id, blocks):
                 new_block_id = get_last_inserted_block_id(target_page_id)
 
                 # Recursively insert child blocks into this newly created block
-                update_todo_blocks(new_block_id, block["children"])
+                add_todo_blocks_to_page(new_block_id, block["children"])
 
 def get_last_inserted_block_id(page_id):
     response = requests.get(f"https://api.notion.com/v1/blocks/{page_id}/children", headers=headers)
