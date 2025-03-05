@@ -77,6 +77,21 @@ def get_children(block_id):
 
     return children
 
+def update_page_content(page_id, json):
+    response = None
+    
+    try:
+        response = requests.patch(f"https://api.notion.com/v1/blocks/{page_id}/children", json=json, headers=headers)
+        
+    except Exception as e:
+        print(f"Failed to get Notion page content: {e}")
+
+    if response.status_code == 200:
+        print("Updated today's journal successfully!")
+    else:
+        print(f"Bad response from Notion for attempted update to page content: {response.json()}")
+
+
 def add_todo_blocks_to_page(target_page_id, blocks):
     for block in blocks:
         if block.get("type") == "to_do":
