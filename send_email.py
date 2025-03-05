@@ -79,29 +79,31 @@ def get_children(block_id):
 
 def add_todo_blocks_to_page(target_page_id, blocks):
     for block in blocks:
-        block_payload = {
-            "children": [
-                {
-                    "object": "block",
-                    "type": "to_do",
-                    "to_do": {
-                        "rich_text": block["to_do"].get("rich_text", []),
-                        "checked": block["to_do"].get("checked", False)
+        if block.get("type") == "to_do":
+            print(block)
+            block_payload = {
+                "children": [
+                    {
+                        "object": "block",
+                        "type": "to_do",
+                        "to_do": {
+                            "rich_text": block["to_do"].get("rich_text", []),
+                            "checked": block["to_do"].get("checked", False)
+                        }
                     }
-                }
-            ]
-        }
+                ]
+            }
 
-        # Send PATCH request to create the to-do block on the new page
-        update_page_content(target_page_id, block_payload)
+            # Send PATCH request to create the to-do block on the new page
+            update_page_content(target_page_id, block_payload)
 
-        # If the block has children, recursively add them
-        if block.get("children"):
-            # Get the last inserted block ID (assuming last response contains the new block ID)
-            new_block_id = get_last_inserted_block_id(target_page_id)
+            # If the block has children, recursively add them
+            if block.get("children"):
+                # Get the last inserted block ID (assuming last response contains the new block ID)
+                new_block_id = get_last_inserted_block_id(target_page_id)
 
-            # Recursively insert child blocks into this newly created block
-            update_todo_blocks(new_block_id, block["children"])
+                # Recursively insert child blocks into this newly created block
+                update_todo_blocks(new_block_id, block["children"])
 
 def get_last_inserted_block_id(page_id):
     response = requests.get(f"https://api.notion.com/v1/blocks/{page_id}/children", headers=headers)
